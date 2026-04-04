@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="800" height="800">
+      <rect width="200" height="200" fill="#f4f1ec"/>
+      <rect x="30" y="30" width="50" height="50" rx="4" fill="#0d0d0d"/>
+      <rect x="30" y="30" width="50" height="50" rx="4" fill="none" stroke="#c0161a" stroke-width="3"/>
+      <text x="55" y="66" text-anchor="middle" font-family="Georgia,serif" font-size="30" font-weight="700" fill="white">A</text>
+      <rect x="40" y="58" width="9" height="9" fill="#c0161a"/>
+      <line x1="44.5" y1="58" x2="44.5" y2="67" stroke="#0d0d0d" stroke-width="1.5"/>
+      <line x1="40" y1="62.5" x2="49" y2="62.5" stroke="#0d0d0d" stroke-width="1.5"/>
+      <text x="90" y="60" font-family="Georgia,serif" font-size="22" font-weight="700" fill="#0d0d0d" letter-spacing="1">ABEL</text>
+      <text x="90" y="76" font-family="Arial,sans-serif" font-size="9" fill="#888" letter-spacing="3">BUILDERS</text>
+      <rect x="30" y="92" width="140" height="2" fill="#c0161a"/>
+      <text x="30" y="108" font-family="Arial,sans-serif" font-size="7.5" fill="#aaa" letter-spacing="2">ENGINEERING CONSULTANCY</text>
+    </svg>
