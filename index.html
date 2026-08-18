@@ -20,13 +20,27 @@
     }
 
     :root {
-      --black: #0a0a0a;
-      --white: #f8f6f2;
-      --red: #b91c1c;
-      --gold: #c9a84c;
-      --mid: #1c1c1c;
-      --muted: #6b6b6b;
-      --border: rgba(255, 255, 255, 0.08);
+      /* ── LIGHT THEME: Warm ivory + deep teal accent ── */
+      --bg-primary: #faf8f5;
+      --bg-secondary: #f0ece6;
+      --bg-tertiary: #e8e3db;
+      --text-primary: #1a1a2e;
+      --text-secondary: #4a4a5a;
+      --text-muted: #7a7a8a;
+      --accent: #1a6b5a;
+      --accent-hover: #145a4b;
+      --accent-light: rgba(26, 107, 90, 0.08);
+      --accent-glow: rgba(26, 107, 90, 0.18);
+      --gold: #b8860b;
+      --gold-light: rgba(184, 134, 11, 0.1);
+      --border: rgba(26, 26, 46, 0.08);
+      --border-hover: rgba(26, 26, 46, 0.16);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow-xl: 0 20px 60px rgba(0,0,0,0.1), 0 8px 20px rgba(0,0,0,0.06);
+      --radius: 12px;
+      --radius-lg: 20px;
     }
 
     html {
@@ -34,12 +48,64 @@
     }
 
     body {
-      background: var(--black);
-      color: var(--white);
+      background: var(--bg-primary);
+      color: var(--text-primary);
       font-family: 'Jost', sans-serif;
       font-weight: 300;
       line-height: 1.6;
       overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ── CUSTOM CURSOR (desktop only) ── */
+    .cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      mix-blend-mode: exclusion;
+      opacity: 0;
+    }
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease, transform 0.08s ease;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+    }
+    .cursor-ring.hover {
+      width: 52px;
+      height: 52px;
+      border-color: var(--gold);
+      background: rgba(184, 134, 11, 0.06);
+    }
+    .cursor-ring.click {
+      width: 28px;
+      height: 28px;
+      border-width: 2.5px;
+    }
+
+    /* ── RIPPLE EFFECT ── */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26, 107, 90, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+      animation: rippleExpand 0.6s ease-out forwards;
+      z-index: 1;
+    }
+    @keyframes rippleExpand {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
     }
 
     /* ── NAV ── */
@@ -53,9 +119,16 @@
       align-items: center;
       justify-content: space-between;
       padding: 1.4rem 4rem;
-      background: rgba(10, 10, 10, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(250, 248, 245, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.35s ease, padding 0.35s ease;
+    }
+
+    nav.scrolled {
+      box-shadow: var(--shadow-md);
+      padding: 1rem 4rem;
     }
 
     .nav-logo {
@@ -63,6 +136,11 @@
       align-items: center;
       gap: 1rem;
       text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-logo:hover {
+      transform: scale(1.02);
     }
 
     .nav-logo img {
@@ -81,14 +159,14 @@
       font-size: 1.35rem;
       font-weight: 600;
       letter-spacing: 0.08em;
-      color: var(--white);
+      color: var(--text-primary);
     }
 
     .nav-brand span:last-child {
       font-size: 0.62rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text-muted);
     }
 
     .nav-links {
@@ -99,33 +177,55 @@
 
     .nav-links a {
       text-decoration: none;
-      color: var(--muted);
+      color: var(--text-muted);
       font-size: 0.78rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      transition: color .25s;
+      transition: color .25s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--accent);
+      transition: width 0.3s ease;
     }
 
     .nav-links a:hover {
-      color: var(--white);
+      color: var(--text-primary);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
     }
 
     .nav-cta {
-      background: var(--red);
+      background: var(--accent);
       color: #fff !important;
       padding: 0.5rem 1.4rem;
       border: none;
+      border-radius: 6px;
       font-size: 0.75rem !important;
       letter-spacing: 0.15em !important;
       text-transform: uppercase;
       cursor: pointer;
       text-decoration: none;
-      transition: background .25s, transform .2s;
+      transition: background .25s, transform .2s, box-shadow .3s;
+    }
+
+    .nav-cta::after {
+      display: none !important;
     }
 
     .nav-cta:hover {
-      background: #991b1b;
-      transform: translateY(-1px);
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
       color: #fff !important;
     }
 
@@ -144,25 +244,21 @@
       background-image: url('img2.png');
       background-size: cover;
       background-position: center;
-      filter: brightness(0.28);
+      filter: brightness(0.38) saturate(1.1);
       transform: scale(1.04);
       animation: slowzoom 14s ease-out forwards;
+      will-change: transform;
     }
 
     @keyframes slowzoom {
-      from {
-        transform: scale(1.04);
-      }
-
-      to {
-        transform: scale(1.0);
-      }
+      from { transform: scale(1.04); }
+      to { transform: scale(1.0); }
     }
 
     .hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(10, 10, 10, 0.7) 40%, transparent 100%);
+      background: linear-gradient(135deg, rgba(250, 248, 245, 0.55) 0%, rgba(250, 248, 245, 0.15) 40%, transparent 100%);
     }
 
     .hero-content {
@@ -173,15 +269,8 @@
     }
 
     @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(28px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .hero-eyebrow {
@@ -190,6 +279,7 @@
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 1.2rem;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
 
     .hero h1 {
@@ -198,6 +288,8 @@
       font-weight: 300;
       line-height: 1.1;
       margin-bottom: 1.4rem;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.25);
     }
 
     .hero h1 em {
@@ -207,10 +299,11 @@
 
     .hero p {
       font-size: 0.95rem;
-      color: rgba(248, 246, 242, 0.65);
+      color: rgba(255, 255, 255, 0.8);
       margin-bottom: 2.4rem;
       max-width: 480px;
       line-height: 1.75;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
 
     .hero-btns {
@@ -223,42 +316,68 @@
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
-      background: var(--red);
+      background: var(--accent);
       color: #fff;
       padding: 0.9rem 2rem;
+      border-radius: 8px;
       text-decoration: none;
       font-size: 0.82rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 500;
-      transition: background .25s, transform .2s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+      transition: background .25s, transform .2s, box-shadow .3s;
     }
 
     .btn-primary:hover {
-      background: #991b1b;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 28px rgba(185, 28, 28, 0.35);
+      background: var(--accent-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px var(--accent-glow);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px) scale(0.98);
     }
 
     .btn-outline {
       display: inline-flex;
       align-items: center;
       gap: 0.6rem;
-      border: 1px solid rgba(248, 246, 242, 0.3);
-      color: var(--white);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
       padding: 0.9rem 2rem;
+      border-radius: 8px;
       text-decoration: none;
       font-size: 0.82rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 400;
-      transition: border-color .25s, background .25s, transform .2s;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .25s, background .25s, transform .2s, color .25s;
     }
 
     .btn-outline:hover {
       border-color: var(--gold);
-      background: rgba(201, 168, 76, 0.08);
-      transform: translateY(-2px);
+      background: rgba(184, 134, 11, 0.12);
+      transform: translateY(-3px);
+      color: #fff;
+    }
+
+    .btn-outline:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    /* Outside hero, btn-outline uses dark text */
+    section:not(.hero) .btn-outline {
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+    section:not(.hero) .btn-outline:hover {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      color: var(--text-primary);
     }
 
     /* ── SECTION COMMON ── */
@@ -270,8 +389,9 @@
       font-size: 0.65rem;
       letter-spacing: 0.35em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--accent);
       margin-bottom: 0.8rem;
+      font-weight: 500;
     }
 
     .section-title {
@@ -280,18 +400,19 @@
       font-weight: 300;
       line-height: 1.15;
       margin-bottom: 1rem;
+      color: var(--text-primary);
     }
 
     .section-sub {
       font-size: 0.92rem;
-      color: var(--muted);
+      color: var(--text-muted);
       max-width: 520px;
       line-height: 1.75;
     }
 
     /* ── SERVICES ── */
     #services {
-      background: var(--mid);
+      background: var(--bg-secondary);
     }
 
     .services-header {
@@ -301,17 +422,18 @@
     .services-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
+      gap: 1.5rem;
     }
 
     .service-card {
-      background: var(--mid);
+      background: var(--bg-primary);
       padding: 2.4rem 2rem;
-      transition: background .3s;
+      border-radius: var(--radius);
+      transition: transform .35s ease, box-shadow .35s ease, background .3s ease;
       position: relative;
       overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
     }
 
     .service-card::before {
@@ -320,24 +442,37 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 2px;
-      background: var(--red);
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
       transform: scaleX(0);
       transform-origin: left;
-      transition: transform .35s;
+      transition: transform .4s ease;
+      border-radius: var(--radius) var(--radius) 0 0;
     }
 
     .service-card:hover {
-      background: #242424;
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      background: #fff;
     }
 
     .service-card:hover::before {
       transform: scaleX(1);
     }
 
+    .service-card:active {
+      transform: translateY(-3px) scale(0.98);
+    }
+
     .service-icon {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       margin-bottom: 1.2rem;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .service-icon {
+      transform: scale(1.15) rotate(-5deg);
     }
 
     .service-card h3 {
@@ -345,17 +480,18 @@
       font-size: 1.25rem;
       font-weight: 500;
       margin-bottom: 0.6rem;
+      color: var(--text-primary);
     }
 
     .service-card p {
       font-size: 0.82rem;
-      color: var(--muted);
+      color: var(--text-muted);
       line-height: 1.65;
     }
 
     /* ── PROJECTS ── */
     #projects {
-      background: var(--black);
+      background: var(--bg-primary);
     }
 
     .projects-header {
@@ -371,13 +507,16 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: auto;
-      gap: 12px;
+      gap: 16px;
     }
 
     .project-card {
       position: relative;
       overflow: hidden;
       cursor: pointer;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.4s ease, transform 0.4s ease;
     }
 
     .project-card:first-child {
@@ -390,13 +529,22 @@
       object-fit: cover;
       display: block;
       min-height: 260px;
-      transition: transform .6s ease;
-      filter: brightness(0.75);
+      transition: transform .6s ease, filter 0.4s ease;
+      filter: brightness(0.88) saturate(1.05);
+    }
+
+    .project-card:hover {
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-4px);
     }
 
     .project-card:hover img {
-      transform: scale(1.05);
-      filter: brightness(0.5);
+      transform: scale(1.06);
+      filter: brightness(0.65) saturate(1.1);
+    }
+
+    .project-card:active {
+      transform: translateY(-2px) scale(0.99);
     }
 
     .project-info {
@@ -404,10 +552,10 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1.8rem 1.6rem 1.4rem;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
+      padding: 2rem 1.6rem 1.4rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
       transform: translateY(6px);
-      transition: transform .35s;
+      transition: transform .35s ease;
     }
 
     .project-card:hover .project-info {
@@ -426,11 +574,12 @@
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.15rem;
       font-weight: 400;
+      color: #fff;
     }
 
     /* ── ABOUT ── */
     #about {
-      background: var(--mid);
+      background: var(--bg-secondary);
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 5rem;
@@ -439,12 +588,26 @@
 
     .about-img {
       position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .about-img:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-xl);
     }
 
     .about-img img {
       width: 100%;
       display: block;
-      filter: brightness(0.85);
+      filter: brightness(0.92) saturate(1.05);
+      transition: filter 0.4s ease;
+    }
+
+    .about-img:hover img {
+      filter: brightness(1) saturate(1.1);
     }
 
     .about-img::after {
@@ -454,8 +617,10 @@
       right: -16px;
       width: 60%;
       height: 60%;
-      border: 1px solid var(--gold);
+      border: 1.5px solid var(--gold);
       pointer-events: none;
+      border-radius: 0 0 var(--radius-lg) 0;
+      transition: border-color 0.3s ease;
     }
 
     .about-text .section-title {
@@ -464,7 +629,7 @@
 
     .about-text p {
       font-size: 0.9rem;
-      color: var(--muted);
+      color: var(--text-muted);
       line-height: 1.8;
       margin-bottom: 1rem;
     }
@@ -475,25 +640,39 @@
       margin: 2rem 0 2.5rem;
     }
 
+    .stat {
+      transition: transform 0.3s ease;
+      cursor: default;
+    }
+
+    .stat:hover {
+      transform: translateY(-4px);
+    }
+
     .stat h4 {
       font-family: 'Cormorant Garamond', serif;
       font-size: 2.4rem;
       font-weight: 300;
-      color: var(--gold);
+      color: var(--accent);
       line-height: 1;
+      transition: color 0.3s ease;
+    }
+
+    .stat:hover h4 {
+      color: var(--gold);
     }
 
     .stat p {
       font-size: 0.7rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-top: 0.3rem;
     }
 
     /* ── CONTACT ── */
     #contact {
-      background: var(--black);
+      background: var(--bg-primary);
     }
 
     .contact-inner {
@@ -514,34 +693,51 @@
       display: flex;
       align-items: flex-start;
       gap: 1rem;
+      padding: 0.6rem;
+      border-radius: var(--radius);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .contact-item:hover {
+      background: var(--bg-secondary);
+      transform: translateX(6px);
     }
 
     .contact-icon {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border: 1px solid var(--border);
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1rem;
       flex-shrink: 0;
-      color: var(--gold);
+      color: var(--accent);
+      background: var(--bg-secondary);
+      transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .contact-item:hover .contact-icon {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      transform: rotate(-5deg) scale(1.08);
     }
 
     .contact-item span {
       font-size: 0.88rem;
-      color: var(--muted);
+      color: var(--text-muted);
       line-height: 1.7;
     }
 
     .contact-item a {
-      color: var(--white);
+      color: var(--text-primary);
       text-decoration: none;
       transition: color .2s;
     }
 
     .contact-item a:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
 
     .contact-right {
@@ -553,21 +749,29 @@
     }
 
     .whatsapp-block {
-      border: 1px solid rgba(185, 28, 28, 0.25);
+      border: 1px solid rgba(26, 107, 90, 0.15);
       padding: 2.2rem;
-      background: rgba(185, 28, 28, 0.04);
+      border-radius: var(--radius);
+      background: var(--accent-light);
       width: 100%;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .whatsapp-block:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-3px);
     }
 
     .whatsapp-block h3 {
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
+      color: var(--text-primary);
     }
 
     .whatsapp-block p {
       font-size: 0.82rem;
-      color: var(--muted);
+      color: var(--text-muted);
       margin-bottom: 1.5rem;
     }
 
@@ -578,41 +782,50 @@
       background: #25d366;
       color: #fff;
       padding: 0.85rem 1.8rem;
+      border-radius: 8px;
       text-decoration: none;
       font-size: 0.82rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       font-weight: 500;
-      transition: background .25s, transform .2s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+      transition: background .25s, transform .2s, box-shadow .3s;
     }
 
     .whatsapp-btn:hover {
       background: #1ebe5a;
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       box-shadow: 0 8px 24px rgba(37, 211, 102, 0.25);
+    }
+
+    .whatsapp-btn:active {
+      transform: translateY(-1px) scale(0.97);
     }
 
     .fb-link {
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
       font-size: 0.78rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+      padding: 0.5rem 0;
       border-bottom: 1px solid transparent;
-      transition: color .2s, border-color .2s;
+      transition: color .2s, border-color .2s, transform .2s;
     }
 
     .fb-link:hover {
       color: #4267B2;
       border-color: #4267B2;
+      transform: translateX(4px);
     }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--mid);
+      background: var(--bg-secondary);
       padding: 2rem 4rem;
       display: flex;
       justify-content: space-between;
@@ -624,18 +837,19 @@
 
     footer p {
       font-size: 0.72rem;
-      color: var(--muted);
+      color: var(--text-muted);
       letter-spacing: 0.08em;
     }
 
     footer a {
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
-      transition: color .2s;
+      transition: color .25s;
+      position: relative;
     }
 
     footer a:hover {
-      color: var(--gold);
+      color: var(--accent);
     }
 
     /* ── HAMBURGER (mobile) ── */
@@ -645,14 +859,29 @@
       gap: 5px;
       cursor: pointer;
       padding: 4px;
+      transition: transform 0.3s ease;
+    }
+
+    .hamburger:hover {
+      transform: scale(1.1);
     }
 
     .hamburger span {
       display: block;
       width: 24px;
       height: 1.5px;
-      background: var(--white);
+      background: var(--text-primary);
       transition: .3s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(4px, 4px);
+    }
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
     }
 
     /* ── SCROLL LINE ── */
@@ -660,16 +889,78 @@
       position: fixed;
       top: 0;
       left: 0;
-      height: 2px;
-      background: var(--red);
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
       z-index: 200;
       width: 0%;
       transition: width .1s;
+      border-radius: 0 2px 2px 0;
     }
 
+    /* ── SCROLL REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ── ACTIVE NAV LINK ── */
+    .nav-links a.active {
+      color: var(--text-primary);
+    }
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* ── REDUCED MOTION ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      .cursor-dot, .cursor-ring {
+        display: none !important;
+      }
+      .reveal, .reveal-left, .reveal-right {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
+      .cursor-dot, .cursor-ring {
+        display: none !important;
+      }
+
       nav {
         padding: 1.2rem 1.8rem;
+      }
+
+      nav.scrolled {
+        padding: 0.9rem 1.8rem;
       }
 
       .nav-links {
@@ -715,16 +1006,73 @@
         flex-direction: column;
         text-align: center;
       }
+
+      .services-grid {
+        gap: 1rem;
+      }
+    }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 68px;
+      left: 0;
+      right: 0;
+      background: rgba(250, 248, 245, 0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 0;
+      z-index: 99;
+      box-shadow: var(--shadow-md);
+      animation: slideDown 0.3s ease;
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s, padding-left 0.2s;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .mobile-menu a:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-menu a:hover,
+    .mobile-menu a:active {
+      background: var(--accent-light);
+      color: var(--accent);
+      padding-left: 2.5rem;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 
 <body>
 
+  <!-- Custom Cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
   <div class="scroll-line" id="scrollLine"></div>
 
   <!-- NAV -->
-  <nav>
+  <nav id="mainNav">
     <a class="nav-logo" href="#">
       <img src="img4.png" alt="Abel Builders Logo" onerror="this.style.display='none'">
       <div class="nav-brand">
@@ -732,21 +1080,30 @@
         <span>Engineering Consultancy & Contractors</span>
       </div>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="#services">Services</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="https://wa.me/917510220142" class="nav-cta" target="_blank">Get Quote</a></li>
     </ul>
-    <div class="hamburger" onclick="toggleMenu()">
+    <div class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
   </nav>
 
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#services" onclick="closeMenu()">Services</a>
+    <a href="#projects" onclick="closeMenu()">Projects</a>
+    <a href="#about" onclick="closeMenu()">About</a>
+    <a href="#contact" onclick="closeMenu()">Contact</a>
+    <a href="https://wa.me/917510220142" target="_blank" onclick="closeMenu()">Get Quote</a>
+  </div>
+
   <!-- HERO -->
   <section class="hero" id="home">
-    <div class="hero-bg" style="background-image: url('img2.png');"></div>
+    <div class="hero-bg" style="background-image: url('img2.png');" id="heroBg"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <p class="hero-eyebrow">Pathanamthitta, Kerala</p>
@@ -768,41 +1125,41 @@
 
   <!-- SERVICES -->
   <section id="services">
-    <div class="services-header">
+    <div class="services-header reveal">
       <div class="section-label">What We Offer</div>
       <h2 class="section-title">Full-Spectrum<br>Construction Services</h2>
       <p class="section-sub">From initial concept to final handover — we manage every stage of your project with
         precision and care.</p>
     </div>
     <div class="services-grid">
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">📐</div>
         <h3>Plan & Design</h3>
         <p>Architectural planning tailored to your lifestyle, lot dimensions, and vision — every square foot optimized.
         </p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">📊</div>
         <h3>Estimation</h3>
         <p>Detailed cost breakdowns so you can plan confidently without financial surprises during construction.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">📋</div>
         <h3>Building Permit</h3>
         <p>We handle all local authority approvals and permit documentation seamlessly on your behalf.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">🏗️</div>
         <h3>3D Visualization</h3>
         <p>Photorealistic 3D renders so you can see and refine your dream home before a single brick is laid.</p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">🔍</div>
         <h3>Supervision</h3>
         <p>On-site supervision ensuring every detail meets design specifications, safety codes, and quality benchmarks.
         </p>
       </div>
-      <div class="service-card">
+      <div class="service-card reveal">
         <div class="service-icon">🏠</div>
         <h3>Full Construction</h3>
         <p>End-to-end contracting for residential projects — from foundation to furnishing-ready finishes.</p>
@@ -813,39 +1170,39 @@
   <!-- PROJECTS -->
   <section id="projects">
     <div class="projects-header">
-      <div>
+      <div class="reveal-left">
         <div class="section-label">Portfolio</div>
         <h2 class="section-title">Signature<br>Residences</h2>
       </div>
-      <a href="https://www.facebook.com/p/ABEL-Builders-100076277795330/" class="btn-outline" target="_blank">
+      <a href="https://www.facebook.com/p/ABEL-Builders-100076277795330/" class="btn-outline reveal-right" target="_blank">
         More on Facebook ↗
       </a>
     </div>
     <div class="projects-grid">
-      <div class="project-card">
-        <img src="Colonial Villa.jpg" alt="Colonial Villa" onerror="this.src=''; this.style.background='#1c1c1c'">
+      <div class="project-card reveal">
+        <img src="Colonial Villa.jpg" alt="Colonial Villa" onerror="this.src=''; this.style.background='var(--bg-tertiary)'">
         <div class="project-info">
           <p class="project-tag">Colonial Contemporary</p>
           <h3>Grand Colonial Residence</h3>
         </div>
       </div>
-      <div class="project-card">
-        <img src="Cape Cottage.jpg" alt="Cape Cottage" onerror="this.src=''; this.style.background='#1c1c1c'">
+      <div class="project-card reveal">
+        <img src="Cape Cottage.jpg" alt="Cape Cottage" onerror="this.src=''; this.style.background='var(--bg-tertiary)'">
         <div class="project-info">
           <p class="project-tag">Cape Style</p>
           <h3>Cape Cottage — Abel Design</h3>
         </div>
       </div>
-      <div class="project-card">
-        <img src="Modern Brick Home.jpg" alt="Modern Brick Home" onerror="this.src=''; this.style.background='#1c1c1c'">
+      <div class="project-card reveal">
+        <img src="Modern Brick Home.jpg" alt="Modern Brick Home" onerror="this.src=''; this.style.background='var(--bg-tertiary)'">
         <div class="project-info">
           <p class="project-tag">Modern Vernacular</p>
           <h3>Brick & White Modern Home</h3>
         </div>
       </div>
-      <div class="project-card">
+      <div class="project-card reveal">
         <img src="Traditional Kerala.jpg" alt="Traditional Kerala"
-          onerror="this.src=''; this.style.background='#1c1c1c'">
+          onerror="this.src=''; this.style.background='var(--bg-tertiary)'">
         <div class="project-info">
           <p class="project-tag">Traditional Kerala</p>
           <h3>Heritage Kerala Nalukettu</h3>
@@ -856,11 +1213,11 @@
 
   <!-- ABOUT -->
   <section id="about">
-    <div class="about-img">
+    <div class="about-img reveal-left">
       <img src="base.jpg" alt="Abel Builders Project"
-        onerror="this.style.background='#2a2a2a'; this.style.height='400px'">
+        onerror="this.style.background='var(--bg-tertiary)'; this.style.height='400px'">
     </div>
-    <div class="about-text">
+    <div class="about-text reveal-right">
       <div class="section-label">About Abel Builders</div>
       <h2 class="section-title">Building Trust,<br>One Home at a Time</h2>
       <p>Abel Builders is a premier engineering consultancy and contracting firm based in Pathanamthitta, Kerala. We
@@ -889,41 +1246,41 @@
 
   <!-- CONTACT -->
   <section id="contact">
-    <div class="section-label">Get In Touch</div>
-    <h2 class="section-title">Let's Build<br>Together</h2>
+    <div class="section-label reveal">Get In Touch</div>
+    <h2 class="section-title reveal">Let's Build<br>Together</h2>
     <div class="contact-inner" style="margin-top:3rem;">
       <div>
-        <p class="section-sub" style="margin-bottom:0;">Reach out for a free consultation. We're happy to discuss your
+        <p class="section-sub reveal" style="margin-bottom:0;">Reach out for a free consultation. We're happy to discuss your
           plans, budget, and timeline.</p>
         <div class="contact-details">
-          <div class="contact-item">
+          <div class="contact-item reveal">
             <div class="contact-icon">📍</div>
             <span>Pathanamthitta<br>Kerala, India</span>
           </div>
-          <div class="contact-item">
+          <div class="contact-item reveal">
             <div class="contact-icon">📞</div>
             <span>
               <a href="tel:+917510220142">+91 75102 20142</a><br>
               <a href="tel:+918590861521">+91 85908 61521</a>
             </span>
           </div>
-          <div class="contact-item">
+          <div class="contact-item reveal">
             <div class="contact-icon">✉️</div>
             <span><a href="mailto:abelbuilderspta@gmail.com">abelbuilderspta@gmail.com</a></span>
           </div>
-          <div class="contact-item">
+          <div class="contact-item reveal">
             <div class="contact-icon">🌐</div>
             <span>
               <a href="https://www.facebook.com/p/ABEL-Builders-100076277795330/" target="_blank">Follow us on
                 Facebook</a><br>
-              <span style="font-size:0.76rem; color:#555;">for latest designs & updates</span>
+              <span style="font-size:0.76rem; color:var(--text-muted);">for latest designs & updates</span>
             </span>
           </div>
         </div>
       </div>
 
       <div class="contact-right">
-        <div class="whatsapp-block">
+        <div class="whatsapp-block reveal">
           <h3>Quick Consultation</h3>
           <p>Message us directly on WhatsApp. Share your plot details and we'll get back to you with a plan.</p>
           <a href="https://wa.me/917510220142?text=Hello%2C%20I'm%20interested%20in%20building%20a%20home%20with%20Abel%20Builders.%20Can%20we%20discuss%20further%3F"
@@ -936,7 +1293,7 @@
           </a>
         </div>
 
-        <a href="https://www.facebook.com/p/ABEL-Builders-100076277795330/" class="fb-link" target="_blank">
+        <a href="https://www.facebook.com/p/ABEL-Builders-100076277795330/" class="fb-link reveal" target="_blank">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="#4267B2">
             <path
               d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -958,51 +1315,283 @@
   </footer>
 
   <script>
-    // Scroll progress bar
+    /* ═══════════════════════════════════════
+       1. SCROLL PROGRESS BAR
+    ═══════════════════════════════════════ */
     window.addEventListener('scroll', () => {
       const el = document.getElementById('scrollLine');
       const p = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
       el.style.width = p + '%';
     });
 
-    // Mobile menu toggle
-    let menuOpen = false;
-    function toggleMenu() {
-      const links = document.querySelector('.nav-links');
-      menuOpen = !menuOpen;
-      if (menuOpen) {
-        links.style.cssText = `
-        display: flex; flex-direction: column; gap: 0;
-        position: fixed; top: 72px; left: 0; right: 0;
-        background: rgba(10,10,10,0.97);
-        padding: 1.5rem 2rem;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-      `;
-        links.querySelectorAll('a').forEach(a => {
-          a.style.padding = '0.8rem 0';
-          a.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-          a.style.fontSize = '0.85rem';
-        });
+    /* ═══════════════════════════════════════
+       2. NAV SCROLL EFFECT
+    ═══════════════════════════════════════ */
+    const mainNav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        mainNav.classList.add('scrolled');
       } else {
-        links.style.cssText = 'display: none;';
+        mainNav.classList.remove('scrolled');
       }
-    }
+    });
 
-    // Fade-in on scroll
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.style.opacity = '1';
-          e.target.style.transform = 'translateY(0)';
+    /* ═══════════════════════════════════════
+       3. ACTIVE NAV LINK HIGHLIGHTING
+    ═══════════════════════════════════════ */
+    const sections = document.querySelectorAll('section[id]');
+    const navLinksAll = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+    const activeObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navLinksAll.forEach(a => a.classList.remove('active'));
+          const id = entry.target.getAttribute('id');
+          const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+          if (activeLink) activeLink.classList.add('active');
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.35, rootMargin: '-80px 0px -40% 0px' });
+    sections.forEach(s => activeObs.observe(s));
 
-    document.querySelectorAll('.service-card, .project-card, .contact-item').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(20px)';
-      el.style.transition = 'opacity .6s ease, transform .6s ease';
-      obs.observe(el);
+    /* ═══════════════════════════════════════
+       4. MOBILE MENU TOGGLE
+    ═══════════════════════════════════════ */
+    let menuOpen = false;
+    const mobileMenu = document.getElementById('mobileMenu');
+    const hamburger = document.getElementById('hamburgerBtn');
+
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      hamburger.classList.toggle('active', menuOpen);
+    }
+
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('active');
+    }
+
+    /* ═══════════════════════════════════════
+       5. SCROLL REVEAL ANIMATIONS
+    ═══════════════════════════════════════ */
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          // Stagger animation for sibling reveals
+          const delay = (e.target.dataset.delay || 0) * 100;
+          setTimeout(() => {
+            e.target.classList.add('visible');
+          }, delay);
+          revealObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el, i) => {
+      // Add stagger delay based on siblings
+      const parent = el.parentElement;
+      const siblings = parent.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+      const idx = Array.from(siblings).indexOf(el);
+      el.dataset.delay = idx;
+      revealObs.observe(el);
+    });
+
+    /* ═══════════════════════════════════════
+       6. CUSTOM CURSOR (Desktop only)
+    ═══════════════════════════════════════ */
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const cursorDot = document.getElementById('cursorDot');
+    const cursorRing = document.getElementById('cursorRing');
+
+    if (!isTouchDevice && window.innerWidth > 900) {
+      let mouseX = 0, mouseY = 0;
+      let ringX = 0, ringY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursorDot.style.opacity = '1';
+        cursorRing.style.opacity = '1';
+        cursorDot.style.transform = `translate(${mouseX - 4}px, ${mouseY - 4}px)`;
+      });
+
+      // Smooth ring follow
+      function animateRing() {
+        ringX += (mouseX - ringX) * 0.15;
+        ringY += (mouseY - ringY) * 0.15;
+        cursorRing.style.left = ringX + 'px';
+        cursorRing.style.top = ringY + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+
+      // Hover effect on interactive elements
+      const interactives = document.querySelectorAll(
+        'a, button, .service-card, .project-card, .hamburger, .stat, .contact-item'
+      );
+      interactives.forEach(el => {
+        el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+      });
+
+      // Click effect
+      document.addEventListener('mousedown', () => cursorRing.classList.add('click'));
+      document.addEventListener('mouseup', () => cursorRing.classList.remove('click'));
+    }
+
+    /* ═══════════════════════════════════════
+       7. CLICK RIPPLE EFFECT ON CARDS
+    ═══════════════════════════════════════ */
+    document.querySelectorAll('.service-card, .project-card, .btn-primary, .btn-outline, .whatsapp-btn').forEach(el => {
+      el.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple-effect');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        this.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
+      });
+    });
+
+    /* ═══════════════════════════════════════
+       8. SERVICE CARD TILT ON MOUSE MOVE
+    ═══════════════════════════════════════ */
+    if (!isTouchDevice) {
+      document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -4;
+          const rotateY = ((x - centerX) / centerX) * 4;
+          card.style.transform = `translateY(-6px) perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+        });
+      });
+    }
+
+    /* ═══════════════════════════════════════
+       9. HERO PARALLAX ON MOUSE MOVE
+    ═══════════════════════════════════════ */
+    if (!isTouchDevice) {
+      const heroBg = document.getElementById('heroBg');
+      const heroSection = document.querySelector('.hero');
+      heroSection.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 12;
+        const y = (e.clientY / window.innerHeight - 0.5) * 8;
+        heroBg.style.transform = `translate(${x}px, ${y}px) scale(1.04)`;
+      });
+      heroSection.addEventListener('mouseleave', () => {
+        heroBg.style.transform = 'scale(1.0)';
+      });
+    }
+
+    /* ═══════════════════════════════════════
+       10. STAT NUMBER COUNT-UP ANIMATION
+    ═══════════════════════════════════════ */
+    const statObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const h4 = entry.target.querySelector('h4');
+          const text = h4.textContent;
+          const match = text.match(/(\d+)/);
+          if (match) {
+            const target = parseInt(match[0]);
+            const suffix = text.replace(match[0], '');
+            let current = 0;
+            const increment = Math.max(1, Math.floor(target / 40));
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                current = target;
+                clearInterval(timer);
+              }
+              h4.textContent = current + suffix;
+            }, 30);
+          }
+          statObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat').forEach(s => statObs.observe(s));
+
+    /* ═══════════════════════════════════════
+       11. TOUCH & SWIPE SUPPORT (Mobile)
+    ═══════════════════════════════════════ */
+    if (isTouchDevice) {
+      // Touch feedback on cards
+      document.querySelectorAll('.service-card, .project-card, .contact-item, .whatsapp-block').forEach(el => {
+        el.addEventListener('touchstart', function() {
+          this.style.transform = 'scale(0.97)';
+          this.style.transition = 'transform 0.15s ease';
+        }, { passive: true });
+        el.addEventListener('touchend', function() {
+          this.style.transform = '';
+        }, { passive: true });
+      });
+
+      // Swipe navigation on projects
+      let touchStartX = 0;
+      let touchStartY = 0;
+      const projectsSection = document.getElementById('projects');
+      if (projectsSection) {
+        projectsSection.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+          touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+        projectsSection.addEventListener('touchend', (e) => {
+          const deltaX = e.changedTouches[0].screenX - touchStartX;
+          const deltaY = e.changedTouches[0].screenY - touchStartY;
+          // Only respond to predominantly horizontal swipes
+          if (Math.abs(deltaX) > 60 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+            const grid = projectsSection.querySelector('.projects-grid');
+            if (grid) {
+              const scrollAmount = deltaX > 0 ? -200 : 200;
+              grid.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+          }
+        }, { passive: true });
+      }
+
+      // Pull-down to reveal nav on scroll up
+      let lastScrollY = 0;
+      window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY < lastScrollY && currentScrollY > 100) {
+          mainNav.style.transform = 'translateY(0)';
+        } else if (currentScrollY > lastScrollY && currentScrollY > 200) {
+          mainNav.style.transform = 'translateY(-100%)';
+          mainNav.style.transition = 'transform 0.35s ease';
+          closeMenu();
+        }
+        if (currentScrollY <= 100) {
+          mainNav.style.transform = 'translateY(0)';
+        }
+        lastScrollY = currentScrollY;
+      }, { passive: true });
+    }
+
+    /* ═══════════════════════════════════════
+       12. SMOOTH ANCHOR SCROLL
+    ═══════════════════════════════════════ */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          const offset = 80;
+          const y = target.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      });
     });
   </script>
 
